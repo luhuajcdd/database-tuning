@@ -22,7 +22,7 @@ class UserMessage(IMessage):
                              did, owner_id,
                              time_c_u, time_c_u))
         cursor.close()
-        debug = True
+        debug = False
         if debug:
             print cursor.lastrowid
 
@@ -65,10 +65,10 @@ def create(content, pid_1, pid_2, user_chat_msg_server_id, num):
 
 
 def create_copy_clear(content, pid_1, pid_2, user_chat_msg_server_id, num, copy_file_name):
+    clear()
     create(content, pid_1, pid_2, user_chat_msg_server_id, num)
     vacuum()
     copy(copy_file_name)
-    clear()
 
 
 def create_copy(content, pid_1, pid_2, user_chat_msg_server_id, num, copy_file_name):
@@ -117,6 +117,9 @@ def one_user():
 
 
 def multi_user(num):
+
+    clear()
+
     content = "----->>>>> . 2018-12-05 测试消息，内容text-37350"
     user_chat_msg_server_id = 100001
     # login user
@@ -133,9 +136,27 @@ def multi_user(num):
             database_name = db_name % (user_count, num)
         create_copy(content, pid_1, list[index], user_chat_msg_server_id, num, database_name)
 
-    clear()
+
+
+def analyze(num,mode):
+    content = "----->>>>> . 2018-12-07 测试消息，内容text-37350"
+    user_chat_msg_server_id = 100001
+    # login user
+    pid_1 = 139497
+
+    if mode == 1:
+        list = [139498]
+    elif mode == 2:
+        list = [139496]
+
+    db_name = "1user-chat-analyze"
+
+    for index in range(len(list)):
+        database_name = db_name
+        create_copy(content, pid_1, list[index], user_chat_msg_server_id, num, database_name)
 
 
 if __name__ == '__main__':
-    one_user()
+    #one_user()
     #multi_user(1000)
+    multi_user(10000)
